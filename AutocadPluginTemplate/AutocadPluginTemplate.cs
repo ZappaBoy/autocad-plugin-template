@@ -1,23 +1,17 @@
 ﻿using System;
-using Autodesk.AutoCAD.ApplicationServices;
-using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
+using AutocadPluginTemplate.Core;
+using AutocadPluginTemplate.Utils;
+using Autodesk.AutoCAD.ApplicationServices.Core;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using Exception = Autodesk.AutoCAD.Runtime.Exception;
-using AutocadPluginTemplate.Utils;
-using AutocadPluginTemplate.Core;
 
 namespace AutocadPluginTemplate
 {
-    
     public class AutocadPluginTemplate
     {
         private readonly AutocadPluginCore _core = new AutocadPluginCore();
+
         [CommandMethod("Hello")]
         public void HelloCommand()
         {
@@ -33,6 +27,11 @@ namespace AutocadPluginTemplate
             Double sideLength = AutocadPluginUtils.GetDoubleFormPrompt("Enter the side length: ");
             _core.DrawCube(basePoint, sideLength);
         }
-        
-    }   
+
+        [CommandMethod("DescribeSelection")]
+        public void DescribeSelectionCommand()
+        {
+            _core.GetSelectedElementsInfo();
+        }
+    }
 }
