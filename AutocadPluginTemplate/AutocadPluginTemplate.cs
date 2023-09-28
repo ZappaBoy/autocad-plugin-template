@@ -31,7 +31,13 @@ namespace AutocadPluginTemplate
         [CommandMethod("DescribeSelection")]
         public void DescribeSelectionCommand()
         {
-            _core.GetSelectedElementsInfo();
+            _core.DescribeSelectedElementsInfo();
+        }
+
+        [CommandMethod("DumpSelection")]
+        public void DumpSelectionCommand()
+        {
+            _core.DumpSelectedElementsInfo();
         }
     }
 }

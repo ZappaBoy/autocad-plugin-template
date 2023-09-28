@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using AutocadPluginTemplate.Utils;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
@@ -7,6 +9,10 @@ namespace AutocadPluginTemplate.Core
 {
     public class AutocadPluginCore
     {
+        static readonly string FileName = "output.txt";
+        static readonly string OutputFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        static readonly string OutputFilePath = Path.Combine(OutputFolderPath, FileName);
+
         public void DrawCube(Point3d basePoint, double sideLength)
         {
             using (Transaction trans = HostApplicationServices.WorkingDatabase.TransactionManager.StartTransaction())
@@ -34,31 +40,17 @@ namespace AutocadPluginTemplate.Core
             }
         }
 
-        public void GetSelectedElementsInfo()
+        public void DescribeSelectedElementsInfo()
         {
-            var editor = AutocadPluginUtils.GetCurrentEditor();
-            var database = AutocadPluginUtils.GetDatabase();
-            var selectionResult = editor.GetSelection();
-            if (selectionResult.Status != PromptStatus.OK) return;
-            var selectionSet = selectionResult.Value;
-            using (var tr = database.TransactionManager.StartTransaction())
-            {
-                var i = 0;
-                foreach (SelectedObject selObj in selectionSet)
-                {
-                    i++;
-                    if (selObj == null) continue;
-                    var objId = selObj.ObjectId;
-                    var entity = tr.GetObject(objId, OpenMode.ForRead) as Entity;
+            Editor editor = AutocadPluginUtils.GetCurrentEditor();
+            string selectedElementsInfo = AutocadPluginUtils.GetSelectedElementsInfo();
+            editor.WriteMessage(selectedElementsInfo);
+        }
 
-                    if (entity == null) continue;
-                    editor.WriteMessage($"Describe Entity : {i}\n");
-                    editor.WriteMessage($"Entity Type: {entity.GetType().Name}\n");
-                    editor.WriteMessage($"Entity Handle Value: {entity.Handle.Value.ToString()}\n");
-                }
-
-                tr.Commit();
-            }
+        public void DumpSelectedElementsInfo()
+        {
+            string selectedElementsInfo = AutocadPluginUtils.GetSelectedElementsInfo();
+            File.WriteAllText(OutputFilePath, selectedElementsInfo);
         }
     }
 }
